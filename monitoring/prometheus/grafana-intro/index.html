@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Grafana使用记录"><meta name="keywords" content="Prometheus,Grafana"><meta name="author" content="lzzeng"><meta name="copyright" content="lzzeng"><title>Grafana使用记录 | Zeng's Page</title><link rel="shortcut icon" href="/pages/melody-favicon.ico"><link rel="stylesheet" href="/pages/css/index.css?version=1.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.7.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script>var GLOBAL_CONFIG = { 
+  root: '/pages/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#快速安装"><span class="toc-number">2.</span> <span class="toc-text">快速安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建一个Dashboard"><span class="toc-number">3.</span> <span class="toc-text">创建一个Dashboard</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#对接Zabbix"><span class="toc-number">4.</span> <span class="toc-text">对接Zabbix</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="https://aly-zlz.oss-cn-shenzhen.aliyuncs.com/images/avatar.jpg"></div><div class="author-info__name text-center">lzzeng</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/pages/archives"><span class="pull-left">文章</span><span class="pull-right">59</span></a><a class="author-info-articles__tags article-meta" href="/pages/tags"><span class="pull-left">标签</span><span class="pull-right">18</span></a><a class="author-info-articles__categories article-meta" href="/pages/categories"><span class="pull-left">分类</span><span class="pull-right">10</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/pages/">Zeng's Page</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/pages">首页</a><a class="site-page" href="/pages/archives">归档</a><a class="site-page" href="/pages/tags">标签</a><a class="site-page" href="/pages/categories">分类</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">Grafana使用记录</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-03-17</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/pages/categories/监控/">监控</a><div class="post-meta-wordcount"><span>字数总计: </span><span class="word-count">537</span><span class="post-meta__separator">|</span><span>阅读时长: 1 分钟</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><hr>
+<blockquote>
+<p>系统：CentOS 7.5</p>
+<p>软件版本：通过docker安装最新版本</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>官网：<a href="https://grafana.com/grafana" target="_blank" rel="noopener">https://grafana.com/grafana</a></p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552441557000.png" alt="1552441557000"></p>
+<blockquote>
+<p>Grafana是一个跨平台、开源的指标度量分析和可视化工具，提供了强大和优雅的方式去创建、共享、浏览数据。Grafana非常适于和时间序列数据库结合展示数据，如<a href="http://docs.grafana.org/features/datasources/graphite/" target="_blank" rel="noopener">Graphite</a>, <a href="http://docs.grafana.org/features/datasources/influxdb/" target="_blank" rel="noopener">InfluxDB</a>, <a href="http://docs.grafana.org/features/datasources/opentsdb/" target="_blank" rel="noopener">OpenTSDB</a>, <a href="http://docs.grafana.org/features/datasources/prometheus/" target="_blank" rel="noopener">Prometheus</a>。</p>
+</blockquote>
+<hr>
+<h3 id="快速安装"><a href="#快速安装" class="headerlink" title="快速安装"></a>快速安装</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拉取镜像</span></span><br><span class="line">docker pull grafana/grafana</span><br><span class="line"><span class="comment"># 运行grafana（admin登录密码为admin）</span></span><br><span class="line">docker run -d -i -p 3000:3000 \</span><br><span class="line">-e <span class="string">"GF_SERVER_ROOT_URL=http://grafana.server.name"</span> \</span><br><span class="line">-e <span class="string">"GF_SECURITY_ADMIN_PASSWORD=admin"</span> \</span><br><span class="line">--net=host \</span><br><span class="line">grafana/grafana</span><br></pre></td></tr></table></figure>
+<p>在192.168.100.150上执行，通过浏览器访问：<a href="http://192.168.100.150:3000" target="_blank" rel="noopener">http://192.168.100.150:3000</a>，以admin/admin登录</p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552443573409.png" alt="1552443573409"></p>
+<p>首页</p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552443615287.png" alt="1552443615287"></p>
+<p>可以看到只有Install Grafana是已完成状态，待添加数据源、创建仪表盘、添加用户、安装插件等。</p>
+<p><em>官网安装指导：&lt;<a href="http://docs.grafana.org/installation/docker/" target="_blank" rel="noopener">http://docs.grafana.org/installation/docker/</a></em>&gt;</p>
+<hr>
+<h3 id="创建一个Dashboard"><a href="#创建一个Dashboard" class="headerlink" title="创建一个Dashboard"></a>创建一个Dashboard</h3><p>先不管Add data source这一步，直接来尝试创建一个Dashboard。</p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552444239771.png" alt="1552444239771"></p>
+<ul>
+<li><p>修改数据源</p>
+<p>default是grafana提供的默认数据源，作演示用没有实际意义。A系列是随机产生的数据。</p>
+</li>
+</ul>
+<p><img src="/assets/images2019/grafana-intro.assets/1552444301113.png" alt="1552444301113"></p>
+<ul>
+<li><p>修改图表样式</p>
+<p>可以在此页签内设置图表类型、线型、阴影、显示的系列等。</p>
+</li>
+</ul>
+<p><img src="/assets/images2019/grafana-intro.assets/1552444564588.png" alt="1552444564588"></p>
+<ul>
+<li><p>修改通用设置</p>
+<p>图表标题、描述信息等。</p>
+</li>
+</ul>
+<p><img src="/assets/images2019/grafana-intro.assets/1552444799208.png" alt="1552444799208"></p>
+<ul>
+<li><p>保存bashboard</p>
+<p>调整图表宽高，保存自定义的dashboard。</p>
+</li>
+</ul>
+<p><img src="/assets/images2019/grafana-intro.assets/1552445155699.png" alt="1552445155699"></p>
+<hr>
+<h3 id="对接Zabbix"><a href="#对接Zabbix" class="headerlink" title="对接Zabbix"></a>对接Zabbix</h3><p>Grafana没有预装zabbix数据源插件。安装过程如下：</p>
+<p>点击Install app &amp; plugins 会跳转到<a href="https://grafana.com/plugins" target="_blank" rel="noopener">https://grafana.com/plugins</a>，选择zabbix。</p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552445518931.png" alt="1552445518931"></p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552445618451.png" alt="1552445618451"></p>
+<p>由于是通过容器运行grafana的，需进入容器执行插件安装。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 列出容器</span></span><br><span class="line">docker ps -a</span><br><span class="line"><span class="comment"># 进入grafana的容器</span></span><br><span class="line">docker <span class="built_in">exec</span> -it &lt;id&gt; bash</span><br><span class="line"></span><br><span class="line"><span class="comment">## grafana容器内</span></span><br><span class="line"><span class="comment"># 安装grafana的zabbix插件</span></span><br><span class="line">grafana-cli plugins install alexanderzobnin-zabbix-app</span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启容器，然后刷新浏览器页面</span></span><br><span class="line">docker restart &lt;id&gt;</span><br></pre></td></tr></table></figure>
+<p><img src="/assets/images2019/grafana-intro.assets/1552446272259.png" alt="1552446272259"></p>
+<p>重启容器后刷新浏览器，可以看到zabbix插件已安装，并启用之。</p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552446449534.png" alt="1552446449534"></p>
+<p>添加zabbix数据源</p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552447021271.png" alt="1552447021271"></p>
+<p>要从zabbix平台<a href="http://192.168.100.69/zabbix" target="_blank" rel="noopener">http://192.168.100.69/zabbix</a>获取数据，URL填<a href="http://192.168.100.69/zabbix/api_jsonrpc.php" target="_blank" rel="noopener">http://192.168.100.69/zabbix/api_jsonrpc.php</a>。</p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552447231301.png" alt="1552447231301"></p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552447361551.png" alt="1552447361551"></p>
+<p>保存后，切换到Dashboards页签，导入相关的zabbix插件提供的dashboard。</p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552447689701.png" alt="1552447689701"></p>
+<p>回到Home，查看已有的dashboard。</p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552447734573.png" alt="1552447734573"></p>
+<p>查看zabbix监控数据在grafana上的展示效果。</p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552447856369.png" alt="1552447856369"></p>
+<p><img src="/assets/images2019/grafana-intro.assets/1552447922398.png" alt="1552447922398"></p>
+<hr>
+<p>(End)</p>
+</div></article><div class="post-meta__tag-list"><a class="post-meta__tags" href="/pages/tags/Prometheus/">Prometheus</a><a class="post-meta__tags" href="/pages/tags/Grafana/">Grafana</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/pages/monitoring/prometheus/alertmanager/"><i class="fa fa-chevron-left">  </i><span>Alertmanager介绍</span></a></div><div class="next-post pull-right"><a href="/pages/monitoring/prometheus/prometheus-intro/"><span>Prometheus + Grafana + Alertmanager监控</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2019 - 2020 By lzzeng</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/pages/js/utils.js?version=1.7.0"></script><script src="/pages/js/fancybox.js?version=1.7.0"></script><script src="/pages/js/sidebar.js?version=1.7.0"></script><script src="/pages/js/copy.js?version=1.7.0"></script><script src="/pages/js/fireworks.js?version=1.7.0"></script><script src="/pages/js/transition.js?version=1.7.0"></script><script src="/pages/js/scroll.js?version=1.7.0"></script><script src="/pages/js/head.js?version=1.7.0"></script><script src="/pages/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
